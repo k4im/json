@@ -15,6 +15,8 @@
         "tags": [
           "Estoque"
         ],
+        "summary": "Retorna todos os dados paginados do banco",
+        "description": "Por padrão irá retornar na pagina 1 e com 5 produtos por pagina, para realizar a alteração destas config, basta passar na rota a pagina desejada, e a quantidade por pagina que deseja. Caso passe apenas \"/estoque/1\" ele irá ignorar o segundo campo e trará a primeira pagina com o padrão de 5 itens por pagina!",
         "parameters": [
           {
             "name": "pagina",
@@ -51,6 +53,8 @@
         "tags": [
           "Estoque"
         ],
+        "summary": "Realiza uma consulta em banco pesquisando pelo id",
+        "description": "Irá buscar um item em banco buscando pelo id passado em rota",
         "parameters": [
           {
             "name": "id",
@@ -75,6 +79,8 @@
         "tags": [
           "Estoque"
         ],
+        "summary": "Estará criando um novo produto em banco",
+        "description": "**AVISO**: é importante que o campo nome seja igual ao campo chapa que contem em um projeto",
         "requestBody": {
           "content": {
             "application/json": {
@@ -106,6 +112,7 @@
         "tags": [
           "Estoque"
         ],
+        "summary": "Ira deletar um produto realizando a consulta por id",
         "parameters": [
           {
             "name": "id",
@@ -130,6 +137,7 @@
         "tags": [
           "Estoque"
         ],
+        "summary": "Irá atualizar um produto buscando por id",
         "parameters": [
           {
             "name": "id",
@@ -173,6 +181,7 @@
         "tags": [
           "Autenticar"
         ],
+        "summary": "Realiza a criação de um novo usuario",
         "requestBody": {
           "content": {
             "application/json": {
@@ -204,6 +213,8 @@
         "tags": [
           "Autenticar"
         ],
+        "summary": "Irá gerar um novo token a partir de um refresh-token",
+        "description": "**AVISO**: é importante enviar o refresh token antes de expirar, tokens de acesso e de refresh são validos por 1h",
         "requestBody": {
           "content": {
             "application/json": {
@@ -235,6 +246,7 @@
         "tags": [
           "Autenticar"
         ],
+        "summary": "Irá realizar o login com as credencias do usuario",
         "requestBody": {
           "content": {
             "application/json": {
@@ -266,6 +278,7 @@
         "tags": [
           "Autenticar"
         ],
+        "summary": "Realiza logout",
         "responses": {
           "200": {
             "description": "Success"
@@ -278,6 +291,8 @@
         "tags": [
           "projetos"
         ],
+        "summary": "Retorna todos os dados paginados do banco",
+        "description": "Por padrão irá retornar na pagina 1 e com 5 produtos por pagina, para realizar a alteração destas config, basta passar na rota a pagina desejada, e a quantidade por pagina que deseja. Caso passe apenas \"/estoque/1\" ele irá ignorar o segundo campo e trará a primeira pagina com o padrão de 5 itens por pagina!",
         "parameters": [
           {
             "name": "pagina",
@@ -314,6 +329,8 @@
         "tags": [
           "projetos"
         ],
+        "summary": "Realiza uma consulta em banco pesquisando pelo id",
+        "description": "Irá buscar um item em banco buscando pelo id passado em rota",
         "parameters": [
           {
             "name": "id",
@@ -338,6 +355,8 @@
         "tags": [
           "projetos"
         ],
+        "summary": "Estará criando um novo produto em banco",
+        "description": "**AVISO**: é importante que o campo (chapa) tenha o mesmo nome que o campo (nome) em produtos",
         "requestBody": {
           "content": {
             "application/json": {
@@ -369,6 +388,7 @@
         "tags": [
           "projetos"
         ],
+        "summary": "Atualiza o projeto pelo id",
         "parameters": [
           {
             "name": "id",
@@ -411,6 +431,165 @@
       "delete": {
         "tags": [
           "projetos"
+        ],
+        "summary": "deleta o projeto pelo id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/fornecedores/{pagina}/{resultadoPorPagina}": {
+      "get": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "resultadoPorPagina",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/fornecedor/{id}": {
+      "get": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/fornecedor/novo": {
+      "post": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/fornecedor/atualizar/{id}": {
+      "put": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/fornecedor/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Fornecedor"
         ],
         "parameters": [
           {
@@ -495,15 +674,10 @@
       "UsuarioDTO": {
         "required": [
           "email",
-          "senha",
-          "userName"
+          "senha"
         ],
         "type": "object",
         "properties": {
-          "userName": {
-            "minLength": 1,
-            "type": "string"
-          },
           "email": {
             "minLength": 1,
             "type": "string"
@@ -511,10 +685,6 @@
           "senha": {
             "minLength": 1,
             "type": "string"
-          },
-          "descricao": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -525,7 +695,7 @@
           "dataEntrega",
           "dataInicio",
           "descricao",
-          "name",
+          "nome",
           "quantidadeDeChapa",
           "status",
           "valor"
@@ -536,7 +706,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "name": {
+          "nome": {
             "minLength": 1,
             "type": "string"
           },
@@ -604,6 +774,43 @@
           "valor": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Fornecedor": {
+        "required": [
+          "cep",
+          "cnpj",
+          "endereco",
+          "nome",
+          "telefone"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "cnpj": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "endereco": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "cep": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "telefone": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
