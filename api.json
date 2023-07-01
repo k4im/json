@@ -1,22 +1,21 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Gateway API",
+    "title": "Icarus Backend",
     "version": "v1"
   },
   "servers": [
     {
-      "url": "http://45.229.107.207:8000"
+      "url": "http://localhost:8000"
     }
   ],
   "paths": {
-    "/estoque/{pagina}/{resultadoPorPagina}": {
+    "/pessoas/{pagina}/{resultado}": {
       "get": {
         "tags": [
-          "Estoque"
+          "PessoaControllers"
         ],
-        "summary": "Retorna todos os dados paginados do banco",
-        "description": "Por padrão irá retornar na pagina 1 e com 5 produtos por pagina, para realizar a alteração destas config, basta passar na rota a pagina desejada, e a quantidade por pagina que deseja. Caso passe apenas \"/estoque/1\" ele irá ignorar o segundo campo e trará a primeira pagina com o padrão de 5 itens por pagina!",
+        "summary": "Retorna uma lista paginada de Pessoas.",
         "parameters": [
           {
             "name": "pagina",
@@ -30,7 +29,7 @@
             }
           },
           {
-            "name": "resultadoPorPagina",
+            "name": "resultado",
             "in": "path",
             "required": true,
             "style": "simple",
@@ -48,17 +47,17 @@
         }
       }
     },
-    "/produto/{id}": {
+    "/pessoa/{id}": {
       "get": {
         "tags": [
-          "Estoque"
+          "PessoaControllers"
         ],
-        "summary": "Realiza uma consulta em banco pesquisando pelo id",
-        "description": "Irá buscar um item em banco buscando pelo id passado em rota",
+        "summary": "Ira retornar uma pessoa a partir de um ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "style": "simple",
             "schema": {
@@ -74,70 +73,461 @@
         }
       }
     },
-    "/produto/novo": {
+    "/pessoa/adicionar": {
       "post": {
         "tags": [
-          "Estoque"
+          "PessoaControllers"
         ],
-        "summary": "Estará criando um novo produto em banco",
-        "description": "**AVISO**: é importante que o campo nome seja igual ao campo chapa que contem em um projeto",
+        "summary": "Cria uma nova pessoa.",
+        "description": "Exemplo:\r\n            \r\n    {\r\n      \"nome\": {\r\n        \"primeiroNome\": \"Roger\",\r\n        \"sobreNome\": \"Yakubets\"\r\n      },\r\n      \"endereco\": {\r\n        \"cidade\": \"Lagoas\",\r\n        \"bairro\": \"Riveira\",\r\n        \"rua\": \"Manoel Antonio Siqueira\",\r\n        \"cep\": \"8852513\",\r\n        \"numero\": 254\r\n      },\r\n      \"telefone\": {\r\n        \"codigoPais\": \"55\",\r\n        \"codigoDeArea\": \"48\",\r\n        \"numero\": \"99542365\"\r\n      },\r\n      \"cpf\": {\r\n        \"cpf\": \"01234567891\"\r\n      }\r\n    }",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Produto"
+                "$ref": "#/components/schemas/Pessoa"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Produto"
+                "$ref": "#/components/schemas/Pessoa"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Produto"
+                "$ref": "#/components/schemas/Pessoa"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Retorna uma mensagem informando que foi criado com sucesso"
+          },
+          "400": {
+            "description": "Retorna uma mensagem informando que não foi possivel criar o usuario, argumento invalido"
+          },
+          "500": {
+            "description": "Retorna uma mensagem informando que não foi possivel criar o usuario, erro interno"
           }
         }
       }
     },
-    "/produto/delete/{id}": {
-      "delete": {
-        "tags": [
-          "Estoque"
-        ],
-        "summary": "Ira deletar um produto realizando a consulta por id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/produto/atualizar/{id}": {
+    "/pessoa/atualizar/endereco/{id}": {
       "put": {
         "tags": [
-          "Estoque"
+          "PessoaControllers"
         ],
-        "summary": "Irá atualizar um produto buscando por id",
+        "summary": "Atualiza o endereço de uma pessoa.",
+        "description": "Exemplo:\r\n    \r\n    {\r\n      \"cidade\": \"Palhoça\",\r\n      \"bairro\": \"Bela Vista\",\r\n      \"rua\": \"Fernando Medeiros\",\r\n      \"cep\": \"885523840\",\r\n      \"numero\": 2544\r\n    }",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Endereco"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Endereco"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Endereco"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna a pessoa com o dado atualizado"
+          },
+          "400": {
+            "description": "Informa que não foi possivel atualizar devido a erro de model"
+          },
+          "404": {
+            "description": "Retorna dado de pessoa não encontrada"
+          }
+        }
+      }
+    },
+    "/pessoa/atualizar/telefone/{id}": {
+      "put": {
+        "tags": [
+          "PessoaControllers"
+        ],
+        "summary": "Atualiza o telefone de uma pessoa.",
+        "description": "Exemplo:\r\n    \r\n    {\r\n      \"codigoPais\": \"55\",\r\n      \"codigoDeArea\": \"11\",\r\n      \"numero\": \"84563368\"\r\n    }",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telefone"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telefone"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telefone"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna a pessoa com o dado atualizado"
+          },
+          "404": {
+            "description": "Retorna dado de pessoa não encontrada"
+          }
+        }
+      }
+    },
+    "/pessoa/deletar/{id}": {
+      "delete": {
+        "tags": [
+          "PessoaControllers"
+        ],
+        "summary": "Ira realizar a removeção de uma pessoa a partir de um ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/usuarios/{pagina}/{resultado}": {
+      "get": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Retorna a lista de usuarios de forma paginada.",
+        "description": "**Caso não seja adicionado um valor de pagina ou resultado, será atribuido como padrão o valor para pagina de 1 e o valor para o resultado por pagina de 5.**",
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "resultado",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/usuarios/novo": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Cria novo usuario.",
+        "description": "Exemplo:\r\n    \r\n    {\r\n      \"nome\": \"Jonas\"            \r\n      \"senha\": \"Sua Senha\",\r\n      \"papel\": \"ADMIN ou ATENDENTE\"\r\n    }",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NovoUsuarioDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NovoUsuarioDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NovoUsuarioDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna a pessoa com o dado atualizado"
+          },
+          "500": {
+            "description": "Retorna que algo deu errado"
+          }
+        }
+      }
+    },
+    "/usuarios/desativar/{chave}": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Ira realizar a operação de desativar um usuario",
+        "description": "Caso o usuario seja desativado o mesmo não conseguira realizar mais login. É possivel estar reativando o usuario, porém enquanto o status permanecer o mesmo não tera mais acesso.",
+        "parameters": [
+          {
+            "name": "chave",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/usuarios/login": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Realizar login.",
+        "description": "Exemplo:\r\n    \r\n    {\r\n      \"chaveDeAcesso\": \"Sua chave de acesso\",\r\n      \"senha\": \"Sua senha\"\r\n    }",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna a pessoa com o dado atualizado"
+          },
+          "500": {
+            "description": "Retorna que algo deu errado"
+          }
+        }
+      }
+    },
+    "/usuarios/logout": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Ira realizar o LogOut do usuario que está atualmente conectado",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/usuarios/reativar/{chave}": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Ira realizar a operação de reativar um usuario",
+        "parameters": [
+          {
+            "name": "chave",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/produtos/{pagina}/{resultado}": {
+      "get": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Este metodo estarpa realizando retornando uma lista contendo as pagina atual, total por pagina e uma lista contendo os produtos.",
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "resultado",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna a lista com os dados necessários"
+          },
+          "404": {
+            "description": "Informa que não foi possivel localizar a lista de produtos"
+          }
+        }
+      }
+    },
+    "/produtos/{id}": {
+      "get": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Estará realizando o a pesquisa de um produto a partir de um ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna o produto"
+          },
+          "400": {
+            "description": "Retorna BadRequest e informa que é necessário ter um id para pequisa"
+          },
+          "404": {
+            "description": "Informa que não foi possivel estar encontrando o produto."
+          }
+        }
+      }
+    },
+    "/produtos/novo_produto": {
+      "post": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Irá realizar a adição de um produto no banco de dados.",
+        "description": "Exemplo:\r\n            \r\n    {\r\n      \"nome\": \"Chapa MDF Branca\",\r\n      \"valor\": 150.00,\r\n      \"quantidade\": 3\r\n    }",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Produto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Produto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Produto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Informa que o produto foi criado com sucesso!"
+          },
+          "400": {
+            "description": "BadRequest, informa o campo que está errado no modelo"
+          },
+          "500": {
+            "description": "Informa que algo deu errado do lado do servidor"
+          }
+        }
+      }
+    },
+    "/produtos/produto_atualizar/{id}": {
+      "put": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Irá realizar update de um produto.",
+        "description": "Exemplo:\r\n            \r\n    {\r\n      \"nome\": \"Chapa MDF Verde\",\r\n      \"valor\": 150.00,\r\n      \"quantidade\": 3\r\n    }",
         "parameters": [
           {
             "name": "id",
@@ -171,128 +561,54 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Informa que o produto foi atualizado com sucesso!"
+          },
+          "400": {
+            "description": "BadRequest, informa o campo que está errado no modelo"
+          },
+          "500": {
+            "description": "Informa que algo deu errado do lado do servidor"
           }
         }
       }
     },
-    "/registro": {
-      "post": {
+    "/produtos/produto_delete/{id}": {
+      "delete": {
         "tags": [
-          "Autenticar"
+          "Produtos"
         ],
-        "summary": "Realiza a criação de um novo usuario",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UsuarioDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UsuarioDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UsuarioDTO"
-              }
+        "summary": "Realiza e remoção de um produto.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/refresh-token": {
-      "post": {
-        "tags": [
-          "Autenticar"
         ],
-        "summary": "Irá gerar um novo token a partir de um refresh-token",
-        "description": "**AVISO**: é importante enviar o refresh token antes de expirar, tokens de acesso e de refresh são validos por 1h",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenDTO"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Informa que o produto foi deletado com sucesso"
+          },
+          "404": {
+            "description": "Informa que não foi possivel localizar um produto com este ID"
+          },
+          "500": {
+            "description": "Informa que não foi possivel realizar a operação, erro do lado do servidor"
           }
         }
       }
     },
-    "/login": {
-      "post": {
-        "tags": [
-          "Autenticar"
-        ],
-        "summary": "Irá realizar o login com as credencias do usuario",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/logout": {
-      "post": {
-        "tags": [
-          "Autenticar"
-        ],
-        "summary": "Realiza logout",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/projetos/{pagina}/{resultadoPorPagina}": {
+    "/projeto/projetos/{pagina}/{resultadoPorPagina}": {
       "get": {
         "tags": [
-          "projetos"
+          "Projeto"
         ],
-        "summary": "Retorna todos os dados paginados do banco",
-        "description": "Por padrão irá retornar na pagina 1 e com 5 produtos por pagina, para realizar a alteração destas config, basta passar na rota a pagina desejada, e a quantidade por pagina que deseja. Caso passe apenas \"/estoque/1\" ele irá ignorar o segundo campo e trará a primeira pagina com o padrão de 5 itens por pagina!",
+        "summary": "Estará realizando a paginação e retornando uma lista completamente paginada de todos os projetos no banco de dados",
         "parameters": [
           {
             "name": "pagina",
@@ -319,18 +635,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Retorna a lista com todos os projetos paginados"
           }
         }
       }
     },
-    "/projeto/{id}": {
+    "/projeto/projeto/{id}": {
       "get": {
         "tags": [
-          "projetos"
+          "Projeto"
         ],
-        "summary": "Realiza uma consulta em banco pesquisando pelo id",
-        "description": "Irá buscar um item em banco buscando pelo id passado em rota",
+        "summary": "Estará realizando a operação de busca de um projeto a partir de um ID",
         "parameters": [
           {
             "name": "id",
@@ -345,33 +660,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Retorna o projeto"
+          },
+          "404": {
+            "description": "Não existe um projeto com este ID"
           }
         }
       }
     },
-    "/projeto/novo": {
+    "/projeto/adicionar": {
       "post": {
         "tags": [
-          "projetos"
+          "Projeto"
         ],
-        "summary": "Estará criando um novo produto em banco",
-        "description": "**AVISO**: é importante que o campo (chapa) tenha o mesmo nome que o campo (nome) em produtos",
+        "summary": "Ira adicionar um novo projeto ao banco de dados, também estará realizando o envio do projeto para o service BUS",
+        "description": "Exemplo:\r\n            \r\n    {\r\n      \"nome\": \"Cozinha\",\r\n      \"status\": {\r\n        \"status\": \"Em produção\"\r\n      },\r\n      \"dataInicio\": \"2023-06-21T15:29:24.256Z\",\r\n      \"dataEntrega\": \"2023-08-25T15:29:24.256Z\",\r\n      \"chapa\": {\r\n        \"chapa\": \"Chapa Branca\"\r\n      },\r\n      \"descricao\": \"Projeto feito para o Ronaldo\",\r\n      \"quantidadeDeChapa\": 5, # Chapas utilizadas\r\n      \"valor\": 3500.00\r\n    }",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Project"
+                "$ref": "#/components/schemas/Projeto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Project"
+                "$ref": "#/components/schemas/Projeto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Project"
+                "$ref": "#/components/schemas/Projeto"
               }
             }
           }
@@ -379,6 +697,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "201": {
+            "description": "Informa que tudo ocorreu como esperado"
           }
         }
       }
@@ -386,9 +707,9 @@
     "/projeto/atualizar/{id}": {
       "put": {
         "tags": [
-          "projetos"
+          "Projeto"
         ],
-        "summary": "Atualiza o projeto pelo id",
+        "summary": "Estará realizando a atualização exclusivamente do status do projeto",
         "parameters": [
           {
             "name": "id",
@@ -405,24 +726,30 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectUpdate"
+                "$ref": "#/components/schemas/StatusProjeto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectUpdate"
+                "$ref": "#/components/schemas/StatusProjeto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectUpdate"
+                "$ref": "#/components/schemas/StatusProjeto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Informa que tudo ocorreu como esperado"
+          },
+          "404": {
+            "description": "Informa que não foi possivel encontrar um produto com este ID"
+          },
+          "409": {
+            "description": "Informa que houve um erro de conflito"
           }
         }
       }
@@ -430,9 +757,9 @@
     "/projeto/delete/{id}": {
       "delete": {
         "tags": [
-          "projetos"
+          "Projeto"
         ],
-        "summary": "deleta o projeto pelo id",
+        "summary": "Estará realizando a operação de remoção do projeto do banco de dados",
         "parameters": [
           {
             "name": "id",
@@ -448,164 +775,15 @@
         "responses": {
           "200": {
             "description": "Success"
-          }
-        }
-      }
-    },
-    "/fornecedores/{pagina}/{resultadoPorPagina}": {
-      "get": {
-        "tags": [
-          "Fornecedor"
-        ],
-        "parameters": [
-          {
-            "name": "pagina",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
           },
-          {
-            "name": "resultadoPorPagina",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "number",
-              "format": "float",
-              "default": 5
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/fornecedor/{id}": {
-      "get": {
-        "tags": [
-          "Fornecedor"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/fornecedor/novo": {
-      "post": {
-        "tags": [
-          "Fornecedor"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/fornecedor/atualizar/{id}": {
-      "put": {
-        "tags": [
-          "Fornecedor"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Fornecedor"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/fornecedor/delete/{id}": {
-      "delete": {
-        "tags": [
-          "Fornecedor"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "Retorna No content caso o projeto tenha sido deletado corretamente"
+          },
+          "404": {
+            "description": "Informa que não foi possivel encontrar um produto com este ID"
+          },
+          "409": {
+            "description": "Informa que houve um erro de conflito"
           }
         }
       }
@@ -613,160 +791,38 @@
   },
   "components": {
     "schemas": {
-      "Produto": {
-        "required": [
-          "cor",
-          "nome",
-          "quantidade",
-          "valorUnitario"
-        ],
+      "CadastroPessoaFisica": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nome": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "cor": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "quantidade": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valorUnitario": {
-            "type": "integer",
-            "format": "int32"
+          "cpf": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "Project": {
-        "required": [
-          "chapa",
-          "dataEntrega",
-          "dataInicio",
-          "descricao",
-          "nome",
-          "quantidadeDeChapa",
-          "status",
-          "valor"
-        ],
+      "Endereco": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nome": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "status": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "dataInicio": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataEntrega": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "chapa": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "descricao": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "quantidadeDeChapa": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ProjectUpdate": {
-        "required": [
-          "status"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
+          "cidade": {
             "type": "string",
             "nullable": true
           },
-          "status": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "dataIncio": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataEntrega": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "descricao": {
+          "bairro": {
             "type": "string",
             "nullable": true
           },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Fornecedor": {
-        "required": [
-          "cep",
-          "cnpj",
-          "endereco",
-          "nome",
-          "telefone"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nome": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "cnpj": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "endereco": {
-            "minLength": 1,
-            "type": "string"
+          "rua": {
+            "type": "string",
+            "nullable": true
           },
           "cep": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
-          "telefone": {
-            "minLength": 1,
-            "type": "string"
+          "numero": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -785,55 +841,179 @@
         },
         "additionalProperties": false
       },
-      "RefreshTokenDTO": {
+      "Nome": {
         "type": "object",
         "properties": {
-          "chaveDeAcesso": {
+          "primeiroNome": {
             "type": "string",
             "nullable": true
           },
-          "token": {
+          "sobreNome": {
             "type": "string",
             "nullable": true
-          },
-          "refreshToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "criadoEm": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "expiraEm": {
-            "type": "string",
-            "format": "date-time"
           }
         },
         "additionalProperties": false
       },
-      "UsuarioDTO": {
-        "required": [
-          "chaveDeAcesso",
-          "email",
-          "senha"
-        ],
+      "NovoUsuarioDTO": {
         "type": "object",
         "properties": {
-          "chaveDeAcesso": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "role": {
+          "nome": {
             "type": "string",
             "nullable": true
           },
           "senha": {
+            "type": "string",
+            "nullable": true
+          },
+          "papel": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Pessoa": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "nome": {
+            "$ref": "#/components/schemas/Nome"
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/Endereco"
+          },
+          "telefone": {
+            "$ref": "#/components/schemas/Telefone"
+          },
+          "cpf": {
+            "$ref": "#/components/schemas/CadastroPessoaFisica"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Telefone": {
+        "type": "object",
+        "properties": {
+          "codigoPais": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigoDeArea": {
+            "type": "string",
+            "nullable": true
+          },
+          "numero": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Produto": {
+        "required": [
+          "nome",
+          "quantidade",
+          "valor"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "nome": {
             "minLength": 1,
             "type": "string"
+          },
+          "valor": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChapaUtilizada": {
+        "type": "object",
+        "properties": {
+          "chapa": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Projeto": {
+        "required": [
+          "chapa",
+          "dataEntrega",
+          "dataInicio",
+          "nome",
+          "quantidadeDeChapa",
+          "status",
+          "valor"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "nome": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusProjeto"
+          },
+          "dataInicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataEntrega": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chapa": {
+            "$ref": "#/components/schemas/ChapaUtilizada"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidadeDeChapa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valor": {
+            "type": "number",
+            "format": "double"
+          },
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StatusProjeto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -842,7 +1022,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "http",
-        "description": "Please enter a valid token",
+        "description": "Adicione o token para logar",
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
